@@ -33,12 +33,12 @@ let router =
   }
 
 type HelloWorld () =
-  member __.Configure () =
+  member __.Configuration () =
     OwinAppFunc.ofFreya router
 
 [<EntryPoint>]
 let main _ =
   Console.WriteLine "Starting"
-  WebApp.Start<HelloWorld> "http://localhost;7000" |> ignore
+  use app = WebApp.Start<HelloWorld> ("http://localhost:7000")
   Console.ReadLine () |> ignore
   0
