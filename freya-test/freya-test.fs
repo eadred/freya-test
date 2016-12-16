@@ -17,6 +17,7 @@ let name =
 
 let hello =
   freya {
+    do! Freya.Optic.set (Freya.Optics.Http.Response.header_ "MyHeader") (Some "Hello")
     let! name = name
 
     return Represent.text (sprintf "Hello %s!" name)
