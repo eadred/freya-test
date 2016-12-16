@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>freya-test</RootNamespace>
     <AssemblyName>freya-test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <Name>freya-test</Name>
