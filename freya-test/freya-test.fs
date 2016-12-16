@@ -1,4 +1,4 @@
-module freya-test
+module FreyaTest
 
 [<EntryPoint>]
 let main argv =
