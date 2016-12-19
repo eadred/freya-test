@@ -3,3 +3,4 @@ nuget FAKE
 nuget freya 3.0.0-rc01 rc
 nuget FSharp.Core
 nuget Microsoft.Owin.SelfHost
+nuget Chiron

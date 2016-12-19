@@ -8,6 +8,37 @@ open Freya.Types.Http
 open System
 open System.Text
 open Microsoft.Owin.Hosting
+open Chiron
+open Chiron.Operators
+
+// See https://neoeinstein.github.io/blog/2015/12-13-chiron-json-ducks-monads/index.html
+// and https://neoeinstein.github.io/blog/2016/04-02-chiron-computation-expressions/index.html
+type Message =
+  { Message: String
+    Importance: int }
+
+  static member ToJson (m : Message) =
+    Json.write  "message" m.Message
+    *> Json.write "importance" m.Importance
+
+  //static member ToJson2 (m: Message) =
+  //  json {
+  //    do! Json.write "message" m.Message
+  //    do! Json.write "importance" m.Importance
+  //  }
+
+  static member FromJson (_ : Message) =
+    let f m i =
+      { Message = m
+        Importance = i }
+    f <!> Json.read "message" <*> Json.read "importance"
+
+  //static member FromJson2 (_ : Message) =
+  //  json {
+  //    let! m = Json.read "message"
+  //    let! i = Json.read "importance"
+  //    return {Message = m; Importance = i }
+  //  }
 
 let name =
   freya {
@@ -23,9 +54,10 @@ let responseHeader =
     return! Freya.Optic.set (Freya.Optics.Http.Response.header_ "MyHeader") (Some "SomeValue")
   }
 
-let encodeTextAsJson (t: String) : Representation =
-  let json = sprintf "{\"message\":\"%s\"}" t
-  { Data = Encoding.UTF8.GetBytes json
+let encodeTextAsMessage (t: String) : Representation =
+  let m = { Message = t; Importance = 10 }
+  let ser = m |> Json.serialize |> Json.formatWith JsonFormattingOptions.Pretty |> Encoding.UTF8.GetBytes
+  { Data = ser
     Description =
     { Charset = Some Charset.Utf8
       Encodings = Some [ContentCoding "identity"]
@@ -37,7 +69,7 @@ let addressPerson address =
     do! responseHeader
     let! name = name
 
-    return encodeTextAsJson (sprintf "%s %s!" address name)
+    return encodeTextAsMessage (sprintf "%s %s!" address name)
   }
 
 let unauth =
