@@ -2,6 +2,7 @@ FSharp.Core
 Freya.Core
 Freya.Machines.Http
 Freya.Machines.Http.Cors
+Freya.Types.Http
 Freya.Routers.Uri.Template
 Microsoft.Owin.Hosting
 Microsoft.Owin.Host.HttpListener

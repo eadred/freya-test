@@ -4,7 +4,9 @@ open Freya.Core
 open Freya.Machines.Http
 open Freya.Machines.Http.Cors
 open Freya.Routers.Uri.Template
+open Freya.Types.Http
 open System
+open System.Text
 open Microsoft.Owin.Hosting
 
 let name =
@@ -21,12 +23,21 @@ let responseHeader =
     return! Freya.Optic.set (Freya.Optics.Http.Response.header_ "MyHeader") (Some "SomeValue")
   }
 
+let encodeTextAsJson (t: String) : Representation =
+  let json = sprintf "{\"message\":\"%s\"}" t
+  { Data = Encoding.UTF8.GetBytes json
+    Description =
+    { Charset = Some Charset.Utf8
+      Encodings = Some [ContentCoding "identity"]
+      MediaType = Some MediaType.Json
+      Languages = None } }
+
 let addressPerson address =
   freya {
     do! responseHeader
     let! name = name
 
-    return Represent.text (sprintf "%s %s!" address name)
+    return encodeTextAsJson (sprintf "%s %s!" address name)
   }
 
 let unauth =
