@@ -17,15 +17,20 @@ let name =
 
 let responseHeader =
   freya {
-    return! Freya.Optic.set (Freya.Optics.Http.Response.header_ "MyHeader") (Some "Hello")
+    return! Freya.Optic.set (Freya.Optics.Http.Response.header_ "MyHeader") (Some "SomeValue")
   }
 
-let hello =
+let addressPerson address =
   freya {
     do! responseHeader
     let! name = name
 
-    return Represent.text (sprintf "Hello %s!" name)
+    return Represent.text (sprintf "%s %s!" address name)
+  }
+
+let unauth =
+  freya {
+    return Represent.text (sprintf "Unauthorized")
   }
 
 let checkAuthorized =
@@ -37,15 +42,17 @@ let checkAuthorized =
     | None -> return false
   }
 
-let machine =
+let authenticatedMachine f =
   freyaMachine {
     authorized checkAuthorized
-    handleOk hello
+    handleOk f
+    handleUnauthorized unauth
   }
 
 let router =
   freyaRouter {
-    resource "/hello{/name}" machine
+    resource "/hello{/name}" ("Hello" |> addressPerson |> authenticatedMachine)
+    resource "/goodbye{/name}" ("Goodbye" |> addressPerson |> authenticatedMachine)
   }
 
 type HelloWorld () =
