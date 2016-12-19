@@ -2,7 +2,7 @@ NUGET
   remote: https://www.nuget.org/api/v2
     Aether (8.1.2)
     Anat (1.0)
-    FAKE (4.46.1)
+    FAKE (4.47)
     FParsec (1.0.2)
     Freya (3.0.0-rc01)
       Freya.Machines.Http (>= 3.0.0-rc < 3.1.0-rc)

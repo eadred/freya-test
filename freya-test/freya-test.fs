@@ -2,6 +2,7 @@ module FreyaTest
 
 open Freya.Core
 open Freya.Machines.Http
+open Freya.Machines.Http.Cors
 open Freya.Routers.Uri.Template
 open System
 open Microsoft.Owin.Hosting
@@ -34,16 +35,20 @@ let unauth =
   }
 
 let checkAuthorized =
-  let isAuthorized h = "alakazam".Equals(h)
   freya {
-    let! authHeader = Freya.Optic.get (Freya.Optics.Http.Request.header_ "Authorization")
-    match authHeader with
-    | Some h -> return isAuthorized h
-    | None -> return false
+    return true;
   }
+  //let isAuthorized h = "alakazam".Equals(h)
+  //freya {
+  //  let! authHeader = Freya.Optic.get (Freya.Optics.Http.Request.header_ "Authorization")
+  //  match authHeader with
+  //  | Some h -> return isAuthorized h
+  //  | None -> return false
+  //}
 
 let authenticatedMachine f =
   freyaMachine {
+    cors
     authorized checkAuthorized
     handleOk f
     handleUnauthorized unauth
